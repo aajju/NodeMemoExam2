@@ -19,7 +19,7 @@ module.exports.generateToken = function (email) {
 };
 
 module.exports.verifyToken = function (token, callback) {
-    jwt.verify(token, 'shhhhh', function(err, decoded) {
+    jwt.verify(token, secretKey, function(err, decoded) {
         if (err) {
             return callback(false, err);
         } else {
@@ -32,4 +32,4 @@ module.exports.verifyToken = function (token, callback) {
             return callback(true, null);
         }
     });
-}
+};
