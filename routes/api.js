@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var MembeerDAO = require('../models/MemberDAO');
+var MemoDAO = require('../models/MemoDAO');
+var auth = require('../auth/auth');
+
 
 /* GET api listing. */
 router.post('/member/check', function (req, res) {
@@ -52,6 +55,29 @@ router.post('/member/join', function (req, res) {
     })
 });
 
+router.post('/memo/insert', function (req, res) {
+    const title = req.body.title;
+    const contents = req.body.contents;
+    if (!title){
+        return res.status(400).json({error: "제목은 공백이 될 수 없습니다"});
+    }
+    if (!contents){
+        return res.status(400).json({error: "내용은 공백이 될 수 없습니다"});
+    }
+
+
+    MemoDAO.insert(title, contents, function (errorMessage, result) {
+        if(errorMessage) {
+            return res.status(500).json({error: "DB 작업 중 에러 발생"});
+        } else {
+            if (result) {
+                return res.status(200).send();
+            }
+        }
+    })
+
+});
+
 router.post('/member/login', function (req, res) {
     const email = req.body.email;
     const password = req.body.password;
@@ -66,8 +92,8 @@ router.post('/member/login', function (req, res) {
         if (errorMessage) {
             return res.status(500).json({error: "DB 작업 중 에러 발생"});
         } else {
-            if (result) {
-                return res.status(200).send();
+            if (result){
+                return res.status(200).append('x-auth-token', auth.generateToken(email)).send();
             } else {
                 return res.status(400).send();
             }
