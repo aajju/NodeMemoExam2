@@ -3,6 +3,7 @@
  */
 
 var pool = require('../config/databaseConfiguration').pool;
+var dateFormat = require('dateformat');
 
 module.exports.insert = function (title, contents, callback) {
     const sql = "INSERT INTO memo (title, contents, time) VALUES (?,?,now())";
@@ -26,7 +27,7 @@ module.exports.insert = function (title, contents, callback) {
 };
 
 module.exports.getMemoList = function (callback) {
-    const sql = "SELECT id, title, contents, UNIX_TIMESTAMP(time) as time FROM memo";
+    const sql = "SELECT id, title, contents, time FROM memo";
 
     pool.getConnection(function (err, connection) {
         if (err) {
@@ -46,7 +47,7 @@ module.exports.getMemoList = function (callback) {
 
                         for (let i = 0 ; i < rows.length; i++){
                             let each = rows[i];
-                            resultList.push({id: each.id, title: each.title, contents : each.contents, time: each.time});
+                            resultList.push({id: each.id, title: each.title, contents : each.contents, time: dateFormat(each.time, 'yyyy.mm.dd hh:MM:ss')});
                         }
 
                         callback(null, resultList);
