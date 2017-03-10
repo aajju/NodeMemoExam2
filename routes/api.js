@@ -170,8 +170,8 @@ router.put('/memo', function (req, res) {
 });
 
 //메모 삭제
-router.delete('/memo', function (req, res) {
-    let id = req.body.id;
+router.delete('/memo/:id', function (req, res) {
+    let id = req.params.id;
     if (!id){
         return res.status(400).json({error: "id는 공백이 될 수 없습니다"});
     }

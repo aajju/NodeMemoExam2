@@ -26,7 +26,7 @@ module.exports.insert = function (title, contents, callback) {
 };
 
 module.exports.getMemoList = function (callback) {
-    const sql = "SELECT * FROM memo"
+    const sql = "SELECT id, title, contents, UNIX_TIMESTAMP(time) as time FROM memo";
 
     pool.getConnection(function (err, connection) {
         if (err) {
